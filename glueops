@@ -1,0 +1,128 @@
+#!/bin/bash
+
+# Define color variables
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+function show_help() {
+    echo -e "${YELLOW}Usage: glueops [command]${NC}"
+    echo ""
+    echo "Commands:"
+    echo -e "  ${GREEN}create app [name]${NC}      Create an application with the specified name."
+    echo -e "  ${GREEN}metrics [name]${NC}         Open the Grafana page for the specified app."
+    echo -e "  ${GREEN}deployment [name]${NC}      Open the ArgoCD page for the specified app."
+    echo -e "  ${GREEN}secrets [name]${NC}         Open the secrets manager for the specified app."
+    echo -e "  ${GREEN}scale [name] [replicas]${NC} Scale the app to the specified number of replicas."
+}
+
+function create_app() {
+    URL="https://admin-ui-stage.apps.nonprod.antoniostacos.onglueops.com/"
+    echo -e "${BLUE}Creating application '$1'...${NC}"
+    echo -e "${GREEN}Repository created.${NC}"
+    echo -e "${GREEN}Basic CI files created.${NC}"
+    echo -e "${GREEN}App is being created.... ${NC}"
+    sleep 5;
+    echo -e "${YELLOW}App is deployed. \n Opening App... ${URL} ${NC}"
+    sleep 3;
+    open ${URL}
+    
+}
+
+function open_metrics() {
+    URL="https://grafana.nonprod.antoniostacos.onglueops.com/d/a87fb0d919ec0ea5f6543124e16c42a5/kubernetes-compute-resources-namespace-workloads?orgId=1&refresh=10s&var-datasource=default&var-cluster=&var-namespace=nonprod&var-type=All"
+    echo -e "${BLUE}Opening Grafana page for the app '$1'...${NC}"
+    echo -e "${YELLOW}Opening metrics... \n ${URL} ${NC}"
+    sleep 3;
+    open ${URL}
+
+}
+
+function open_deployment() {
+    URL="https://argocd.nonprod.antoniostacos.onglueops.com/applications/glueops-core/admin-ui-stage"
+    echo -e "${BLUE}Opening ArgoCD for the app '$1'...${NC}"
+    echo -e "${YELLOW}Opening... \n ${URL} ${NC}"
+    sleep 3;
+    open ${URL}
+}
+
+function open_secrets() {
+    URL="https://vault.nonprod.antoniostacos.onglueops.com/ui/vault/secrets/secret/show/admin-ui"
+    echo -e "${BLUE}Opening secrets manager for the app '$1'...${NC}"
+    echo -e "${YELLOW}Opening... ${URL}${NC}"
+    sleep 3;
+    open ${URL}
+}
+
+function open_previews() {
+    URL="https://github.com/antoniostacos/admin-ui/pulls"
+    echo -e "${BLUE}Opening preview environments for the app '$1'...${NC}"
+    echo -e "${YELLOW}Opening... ${URL}${NC}"
+    sleep 3;
+    open ${URL}
+}
+
+function scale_app() {
+    echo -e "${BLUE}Scaling app '$1' to $2 replicas...${NC}"
+    echo -e "${GREEN}App '$1' scaled to $2 replicas.${NC}"
+}
+
+if [ $# -lt 1 ]; then
+    show_help
+    exit 1
+fi
+
+command="$1"
+case $command in
+    create)
+        if [ "$2" == "app" ] && [ -n "$3" ]; then
+            create_app "$3"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    metrics)
+        if [ -n "$2" ]; then
+            open_metrics "$2"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    deployment)
+        if [ -n "$2" ]; then
+            open_deployment "$2"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    secrets)
+        if [ -n "$2" ]; then
+            open_secrets "$2"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    previews)
+        if [ -n "$2" ]; then
+            open_previews "$2"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    scale)
+        if [ -n "$2" ] && [ -n "$3" ]; then
+            scale_app "$2" "$3"
+        else
+            echo -e "${RED}Invalid command. See 'glueops help'.${NC}"
+        fi
+        ;;
+    help)
+        show_help
+        ;;
+    *)
+        echo -e "${RED}Unknown command: $command${NC}"
+        show_help
+        ;;
+esac
