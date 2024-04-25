@@ -15,6 +15,7 @@ function show_help() {
     echo -e "  ${GREEN}metrics [name]${NC}         Open the Grafana page for the specified app."
     echo -e "  ${GREEN}deployment [name]${NC}      Open the ArgoCD page for the specified app."
     echo -e "  ${GREEN}secrets [name]${NC}         Open the secrets manager for the specified app."
+    echo -e "  ${GREEN}previews [name]${NC}         View preview environments for the specified app."
     echo -e "  ${GREEN}scale [name] [replicas]${NC} Scale the app to the specified number of replicas."
 }
 
@@ -24,9 +25,9 @@ function create_app() {
     echo -e "${GREEN}Repository created.${NC}"
     echo -e "${GREEN}Basic CI files created.${NC}"
     echo -e "${GREEN}App is being created.... ${NC}"
-    sleep 5;
-    echo -e "${YELLOW}App is deployed. \n Opening App... ${URL} ${NC}"
     sleep 3;
+    echo -e "${YELLOW}App is deployed. \n Opening App... ${URL} ${NC}"
+    sleep 2;
     open ${URL}
     
 }
@@ -35,7 +36,7 @@ function open_metrics() {
     URL="https://grafana.nonprod.antoniostacos.onglueops.com/d/a87fb0d919ec0ea5f6543124e16c42a5/kubernetes-compute-resources-namespace-workloads?orgId=1&refresh=10s&var-datasource=default&var-cluster=&var-namespace=nonprod&var-type=All"
     echo -e "${BLUE}Opening Grafana page for the app '$1'...${NC}"
     echo -e "${YELLOW}Opening metrics... \n ${URL} ${NC}"
-    sleep 3;
+    sleep 2;
     open ${URL}
 
 }
@@ -44,7 +45,7 @@ function open_deployment() {
     URL="https://argocd.nonprod.antoniostacos.onglueops.com/applications/glueops-core/admin-ui-stage"
     echo -e "${BLUE}Opening ArgoCD for the app '$1'...${NC}"
     echo -e "${YELLOW}Opening... \n ${URL} ${NC}"
-    sleep 3;
+    sleep 2;
     open ${URL}
 }
 
@@ -52,7 +53,7 @@ function open_secrets() {
     URL="https://vault.nonprod.antoniostacos.onglueops.com/ui/vault/secrets/secret/show/admin-ui"
     echo -e "${BLUE}Opening secrets manager for the app '$1'...${NC}"
     echo -e "${YELLOW}Opening... ${URL}${NC}"
-    sleep 3;
+    sleep 2;
     open ${URL}
 }
 
@@ -60,7 +61,7 @@ function open_previews() {
     URL="https://github.com/antoniostacos/admin-ui/pulls"
     echo -e "${BLUE}Opening preview environments for the app '$1'...${NC}"
     echo -e "${YELLOW}Opening... ${URL}${NC}"
-    sleep 3;
+    sleep 2;
     open ${URL}
 }
 
